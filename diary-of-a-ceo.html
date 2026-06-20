@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diary of a CEO — Learnings &amp; Insights</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --accent:#d4a24e; --accent-soft:rgba(212,162,78,0.14); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; padding:0 0 60px; }
+  header { padding:40px 24px 28px; max-width:1100px; margin:0 auto; text-align:center; }
+  header .kicker { color:var(--accent); font-size:13px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+  header h1 { font-size:34px; margin:10px 0 6px; letter-spacing:-0.5px; }
+  header p { color:var(--muted); font-size:15px; max-width:620px; margin:0 auto; }
+  .controls { max-width:1100px; margin:24px auto 0; padding:0 24px; }
+  #search { width:100%; padding:14px 18px; font-size:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; transition:border .15s; }
+  #search:focus { border-color:var(--accent); }
+  #search::placeholder { color:var(--muted); }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .chip { padding:7px 15px; font-size:13.5px; border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--muted); cursor:pointer; transition:all .15s; user-select:none; }
+  .chip:hover { background:var(--card-hover); color:var(--text); }
+  .chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .count { max-width:1100px; margin:18px auto 0; padding:0 24px; color:var(--muted); font-size:13px; }
+  .grid { max-width:1100px; margin:14px auto 0; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; flex-direction:column; transition:transform .12s,border .12s; }
+  .card:hover { transform:translateY(-2px); border-color:var(--accent); }
+  .card .tag { align-self:flex-start; font-size:11px; letter-spacing:.6px; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:6px; font-weight:600; margin-bottom:12px; }
+  .card h3 { font-size:17px; margin-bottom:8px; line-height:1.35; }
+  .card p { font-size:14.5px; color:#c7ccd5; flex-grow:1; }
+  .card .src { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); }
+  .empty { max-width:1100px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
+  footer { max-width:1100px; margin:50px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
+  footer a { color:var(--accent); }
+    .topnav{max-width:1100px;margin:18px auto 0;padding:0 24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .navbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-size:14.5px;font-weight:600;text-decoration:none;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s}
+  .navbtn:hover{background:var(--card-hover);color:var(--text)}
+  .navbtn.active{border-color:#3a4150;color:var(--text)}
+  .navbtn.cta{background:var(--accent);color:#1a1d24;border-color:var(--accent)}
+  .navbtn.cta:hover{filter:brightness(1.08);background:var(--accent);color:#1a1d24}
+mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Diary of a CEO &middot; Steven Bartlett</div>
+  <h1>Learnings &amp; Insights</h1>
+  <p>Die wiederkehrenden Erkenntnisse aus dem Podcast &mdash; nach Themen geclustert, durchsuchbar und mit Quelle pro Karte. Tippe ein Stichwort oder filtere nach Thema &mdash; die Treffer erscheinen sofort.</p>
+</header>
+<nav class="topnav">
+  <a class="navbtn cta" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
+  <a class="navbtn" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
+  <a class="navbtn active" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
+</nav>
+<div class="controls">
+  <input id="search" type="text" placeholder="Suche nach Stichwort, Gast oder Thema… (z. B. Schlaf, Trauma, Index-Fonds)" autocomplete="off">
+  <div class="filters" id="filters"></div>
+</div>
+<div class="count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="empty" id="empty" style="display:none">Keine Treffer. Versuch ein anderes Stichwort.</div>
+<footer>
+  Inhalte zusammengefasst aus öffentlich verfügbaren Episoden-Notizen, Show-Notes und Steven Bartletts Buch „The 33 Laws of Business and Life“. Eine kuratierte Übersicht der Kernideen &mdash; kein vollständiges Transkript. &nbsp;·&nbsp; <a href="podcast-learnings.html">Zur kombinierten Wissensbibliothek (3 Podcasts) →</a>
+</footer>
+<script>
+const DATA = [
+{
+"theme": "Mindset",
+"title": "Spiele das Leben wie ein Videospiel",
+"insight": "Bartletts „Video-Game State of Mind“: Beim Zocken handeln wir furchtlos, im echten Leben zögerlich. Dieselbe spielerische Risikobereitschaft aufs Leben zu übertragen, half ihm durch dunkle Phasen und Krisen.",
+"source": "Steven Bartlett"
+},
+{
+"theme": "Mindset",
+"title": "Scheitern ist die Studiengebühr für Weisheit",
+"insight": "Die erfolgreichsten Menschen und Firmen sind oft die, die am meisten scheitern. Jeder Misserfolg enthält Feedback, Feedback wird zu Wissen, angewandtes Wissen wird zu Macht.",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Mindset",
+"title": "Kleine Fehler kompoundieren",
+"insight": "Winzige, ignorierte Fehler wachsen über Zeit zu großen Katastrophen — ob in Beziehungen, Business oder persönlicher Entwicklung. Wer kleine Missstände übersieht, zahlt später teuer.",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Mindset",
+"title": "Verletzlichkeit ist kein Schwäche, sondern Mut",
+"insight": "Brené Brown (meistgewünschter Gast des Podcasts): Verletzlichkeit ist der Kern von Mut und authentischem Leben. Wer sie vermeidet, vermeidet auch echte Verbindung.",
+"source": "Brené Brown"
+},
+{
+"theme": "Mindset",
+"title": "Geschwindigkeit schlägt Perfektion",
+"insight": "Schnelle Akteure überholen langsame — immer. Statt auf den perfekten Moment zu warten, lieber zügig handeln, iterieren und aus dem Feedback lernen.",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Mindset",
+"title": "„Screw it, just do it“",
+"insight": "Richard Branson baute Virgin mit radikaler Handlungsbereitschaft auf und machte seine Dyslexie zum Geschäftsvorteil. Anfangen schlägt Grübeln.",
+"source": "Richard Branson"
+},
+{
+"theme": "Business",
+"title": "Fülle deine fünf Eimer",
+"insight": "Erfolg beginnt mit dem Füllen von fünf „Buckets“ in dieser Reihenfolge: Wissen, Fähigkeiten, Netzwerk, Ressourcen, Reputation. Die ersten beiden kann dir niemand nehmen.",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Business",
+"title": "Die vier Säulen des Erfolgs",
+"insight": "Bartletts Rahmenwerk: Das Selbst (Selbsterkenntnis & Disziplin), Die Story (Einfluss durch Erzählen), Die Philosophie (Werte als Kompass) und Das Team (die richtigen Menschen).",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Business",
+"title": "Die fünf Prinzipien der Innovation",
+"insight": "Bürokratie abbauen, Anreize richtig setzen, die richtigen Führungskräfte befördern, korrekt messen und Misserfolge offen teilen. So bleibt eine Organisation innovativ.",
+"source": "33 Laws of Business and Life"
+},
+{
+"theme": "Business",
+"title": "Community-led Marketing schlägt Werbung",
+"insight": "Ben Francis baute Gymshark über eine echte Community und authentische Markenidentität statt klassischer Werbung — der Blueprint für moderne Marken.",
+"source": "Ben Francis (Gymshark)"
+},
+{
+"theme": "Business",
+"title": "Fokus auf Menschen sichert Freiheit",
+"insight": "Branson: Wer langfristig auf Menschen — Mitarbeitende wie Kund:innen — setzt, gewinnt unternehmerische Freiheit. Kultur ist kein Beiwerk, sondern Fundament.",
+"source": "Richard Branson"
+},
+{
+"theme": "Geld",
+"title": "Zwei Wege zu mehr Wohlstand",
+"insight": "Morgan Housel: Es gibt nur zwei Hebel — mehr verzichten (sparen) oder weniger wollen. Beide verkleinern die Lücke zwischen Ego und Einkommen.",
+"source": "Morgan Housel"
+},
+{
+"theme": "Geld",
+"title": "Reichtum ist unsichtbar, Status ist sichtbar",
+"insight": "Was man sieht — Autos, Uhren, Häuser — ist Status. Echter Reichtum ist still, geduldig und unsichtbar: das Geld, das man NICHT ausgegeben hat.",
+"source": "Morgan Housel"
+},
+{
+"theme": "Geld",
+"title": "Der „Midwit“-Investor verliert",
+"insight": "Anfänger und Wall-Street-Profis kaufen beide Index-Fonds. Nur der Halbwissende glaubt, den Markt schlagen zu können. Stetiges Compounding über Jahrzehnte schlägt Aktivität.",
+"source": "Morgan Housel"
+},
+{
+"theme": "Geld",
+"title": "Der Hausmeister mit 8 Mio. Dollar",
+"insight": "Ronald Read, Tankwart und Hausmeister, hinterließ 8 Mio. $ — durch 70 Jahre geduldiges Investieren. Zeit im Markt schlägt Timing und Gehalt.",
+"source": "Morgan Housel"
+},
+{
+"theme": "Geld",
+"title": "Harte Arbeit allein baut keinen Reichtum",
+"insight": "Codie Sanchez: Wohlstand entsteht durch Eigentum an Cashflow-Geschäften, nicht durch Stunden. Sie plädiert für den Kauf „langweiliger“ Main-Street-Unternehmen.",
+"source": "Codie Sanchez"
+},
+{
+"theme": "Gesundheit",
+"title": "Feste Schlafzeiten sind die Nr. 1 Regel",
+"insight": "Matthew Walker: Jeden Tag zur selben Zeit ins Bett und aufstehen — auch am Wochenende. Regelmäßigkeit stabilisiert den circadianen Rhythmus stärker als jede lange Nacht.",
+"source": "Matthew Walker"
+},
+{
+"theme": "Gesundheit",
+"title": "Kühl, dunkel, ruhig schlafen",
+"insight": "Schlafzimmer auf 18–18,5 °C, Licht in der Stunde vor dem Bett reduzieren, statt Scrollen etwas Beruhigendes tun. Licht und Wärme arbeiten gegen Tiefschlaf.",
+"source": "Matthew Walker"
+},
+{
+"theme": "Gesundheit",
+"title": "Alkohol & Koffein sabotieren den Tiefschlaf",
+"insight": "Beide stören heimlich die Erholungsphasen des Schlafs und die mentale Leistung — selbst wenn man das Gefühl hat, gut geschlafen zu haben.",
+"source": "Matthew Walker"
+},
+{
+"theme": "Gesundheit",
+"title": "Schlafmangel ist ein Ganzkörper-Risiko",
+"insight": "Zu wenig Schlaf erhöht das Risiko für Prädiabetes, Herz-Kreislauf-Erkrankungen, Übergewicht, gesenkte Hormonspiegel, Angst und Depression — bis hin zu früherer Sterblichkeit.",
+"source": "Matthew Walker"
+},
+{
+"theme": "Gesundheit",
+"title": "Gesundheit beginnt im Darm",
+"insight": "Tim Spector: Neue Forschung verknüpft Demenz, Depression und Angst mit der Darmgesundheit. Vielfalt (30+ Pflanzen/Woche) zählt mehr als Kalorienzählen.",
+"source": "Tim Spector"
+},
+{
+"theme": "Gesundheit",
+"title": "Vorsicht bei Online-Gesundheitstrends",
+"insight": "Dr. Mike warnt vor schädlichen Diäten und dem Mythos des reinen Kalorienzählens. Viele virale Gesundheitstrends halten der Evidenz nicht stand.",
+"source": "Dr. Mike"
+},
+{
+"theme": "Psychologie",
+"title": "Trauma sind unerfüllte emotionale Bedürfnisse",
+"insight": "Gabor Maté: Trauma ist nicht nur Missbrauch, sondern die Wunde, wenn als Kind emotionale Bedürfnisse unerfüllt bleiben — selbst in liebevollen Familien.",
+"source": "Gabor Maté"
+},
+{
+"theme": "Psychologie",
+"title": "Der Körper hält die Rechnung",
+"insight": "Unverarbeitetes Trauma versetzt das Nervensystem in Dauer-Stress oder Taubheit und kann sich als körperliche Krankheit, Sucht oder chronische Dysfunktion zeigen.",
+"source": "Gabor Maté"
+},
+{
+"theme": "Psychologie",
+"title": "Mach das Trauma zum Freund, nicht zum Meister",
+"insight": "Trauma wirkt wie ein Puppenspieler. Der Ausweg: es bewusst wahrnehmen und integrieren. Das Gegenteil von Trauma ist Befreiung.",
+"source": "Gabor Maté"
+},
+{
+"theme": "Psychologie",
+"title": "„Abnormales“ Verhalten ist oft normal",
+"insight": "Vieles, was als psychische Krankheit gilt, ist eine normale Reaktion auf widrige Lebenserfahrungen. Maté plädiert für einen trauma-informierten Blick auf die Ursachen.",
+"source": "Gabor Maté"
+},
+{
+"theme": "Psychologie",
+"title": "Genetik erklärt nur die halbe Zufriedenheit",
+"insight": "Etwa die Hälfte des individuellen Glücks ist genetisch — der Rest hängt von Entscheidungen ab, vor allem der Wahl von Partner:in und Beruf.",
+"source": "Diary of a CEO (Happiness)"
+},
+{
+"theme": "Beziehungen",
+"title": "Die Partnerwahl ist eine der größten Lebensentscheidungen",
+"insight": "Wiederkehrendes Thema: Wen man als Partner:in wählt und welchen Beruf man ergreift, beeinflusst die Lebenszufriedenheit stärker als fast jede andere Entscheidung.",
+"source": "Diary of a CEO"
+},
+{
+"theme": "Beziehungen",
+"title": "Die stille Epidemie der Vereinsamung",
+"insight": "Brené Brown: Trotz digitaler Vernetzung leben viele in einer versteckten Epidemie der Disconnection. Echte Zugehörigkeit erfordert verletzliche, präsente Verbindung.",
+"source": "Brené Brown"
+},
+{
+"theme": "Beziehungen",
+"title": "Zeit für Familie ist die unsichtbare Priorität",
+"insight": "Ein Faden durch fast jede Folge: Bartlett reflektiert, wie wenig Zeit er Familie und engen Freund:innen gibt — und wie zentral diese Beziehungen für ein gutes Leben sind.",
+"source": "Steven Bartlett"
+},
+{
+"theme": "Tech & Fokus",
+"title": "Dein Handy ist eine Skinner-Box",
+"insight": "Digitale Geräte funktionieren wie Belohnungs-Apparate, die unsere Biologie hacken. Short-Form-Video kann Gedächtnis und kognitive Funktion messbar beeinträchtigen.",
+"source": "Diary of a CEO (Tech)"
+},
+{
+"theme": "Tech & Fokus",
+"title": "Gen Z trägt die Last der Always-On-Kultur",
+"insight": "Höhere Raten von Angst und Depression unter jungen Nutzer:innen werden mit intensivem Konsum kurzer Videoformate und permanenter Erreichbarkeit in Verbindung gebracht.",
+"source": "Diary of a CEO (Tech)"
+},
+{
+"theme": "Tech & Fokus",
+"title": "KI: Macht konzentriert sich bei wenigen",
+"insight": "Diskussionen zu KI heben hervor, wie wenige Akteure die Entscheidungsmacht halten, wie Narrative gespielt werden und welche realen Umweltkosten große Rechenzentren verursachen.",
+"source": "Diary of a CEO (KI)"
+}
+];
+
+const THEME_ORDER=["Mindset","Business","Geld","Gesundheit","Psychologie","Beziehungen","Tech & Fokus"];
+let activeTheme="Alle", query="";
+const grid=document.getElementById("grid"), filters=document.getElementById("filters"),
+      countEl=document.getElementById("count"), emptyEl=document.getElementById("empty"),
+      searchEl=document.getElementById("search");
+["Alle",...THEME_ORDER].forEach(t=>{
+  const chip=document.createElement("div");
+  chip.className="chip"+(t==="Alle"?" active":""); chip.textContent=t==="Alle"?"Alle Themen":t;
+  chip.onclick=()=>{ activeTheme=t; document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); render(); };
+  filters.appendChild(chip);
+});
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function highlight(t,q){const safe=escapeHtml(t); if(!q) return safe; const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"); return safe.replace(re,"<mark>$1</mark>");}
+function render(){
+  const q=query.trim().toLowerCase();
+  const items=DATA.filter(d=>{
+    const themeOk=activeTheme==="Alle"||d.theme===activeTheme;
+    const text=(d.title+" "+d.insight+" "+d.source+" "+d.theme).toLowerCase();
+    return themeOk&&(!q||text.includes(q));
+  });
+  countEl.textContent=items.length+(items.length===1?" Learning":" Learnings");
+  grid.innerHTML=items.map(d=>`
+    <div class="card">
+      <span class="tag">${escapeHtml(d.theme)}</span>
+      <h3>${highlight(d.title,q)}</h3>
+      <p>${highlight(d.insight,q)}</p>
+      <div class="src">Quelle: ${highlight(d.source,q)}</div>
+    </div>`).join("");
+  emptyEl.style.display=items.length?"none":"block";
+}
+searchEl.addEventListener("input",e=>{query=e.target.value; render();});
+render();
+
+</script>
+</body>
+</html>

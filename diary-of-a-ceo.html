@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diary of a CEO — Learnings &amp; Insights</title>
 <style>
-  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --accent:#d4a24e; --accent-soft:rgba(212,162,78,0.14); }
+  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --accent:#4f8cff; --accent-soft:rgba(79,140,255,0.16); }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; padding:0 0 60px; }
   header { padding:40px 24px 28px; max-width:1100px; margin:0 auto; text-align:center; }
@@ -32,11 +32,11 @@
   footer { max-width:1100px; margin:50px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
   footer a { color:var(--accent); }
     .topnav{max-width:1100px;margin:18px auto 0;padding:0 24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-  .navbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-size:14.5px;font-weight:600;text-decoration:none;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s}
+  .navbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-size:14.5px;font-weight:600;text-decoration:none;border:1px solid var(--border);background:var(--card);color:#c7ccd5;transition:all .15s}
   .navbtn:hover{background:var(--card-hover);color:var(--text)}
-  .navbtn.active{border-color:#3a4150;color:var(--text)}
-  .navbtn.cta{background:var(--accent);color:#1a1d24;border-color:var(--accent)}
-  .navbtn.cta:hover{filter:brightness(1.08);background:var(--accent);color:#1a1d24}
+  .navbtn.active{background:var(--accent);color:#0f1115;border-color:var(--accent);font-weight:700;cursor:default}
+  .navbtn.active::before{content:"\2022 "}
+  .navbtn.active:hover{background:var(--accent);color:#0f1115}
 mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px; }
 </style>
 </head>
@@ -47,7 +47,7 @@ mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px
   <p>Die wiederkehrenden Erkenntnisse aus dem Podcast &mdash; nach Themen geclustert, durchsuchbar und mit Quelle pro Karte. Tippe ein Stichwort oder filtere nach Thema &mdash; die Treffer erscheinen sofort.</p>
 </header>
 <nav class="topnav">
-  <a class="navbtn cta" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
+  <a class="navbtn" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
   <a class="navbtn" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
   <a class="navbtn active" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
 </nav>

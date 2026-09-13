@@ -27,6 +27,7 @@ EVERGREEN = {
  "AGI noch in diesem Jahrzehnt erwartet","Grundeinkommen-Studie: Hilfe, kein Allheilmittel",
  "Überzeugung und Fokus für Gründer","Skalierungsgesetze treiben KI Richtung Menschenniveau",
  "Machines of Loving Grace: 100 Jahre Biologie in 10","Ein 'Wettlauf nach oben' bei KI-Sicherheit",
+ "Erinnerungen können über Generationen vererbt werden","Das Drei-Stufen-Modell für Gespräche, die wirklich verbinden",
 }
 
 rows=[]
@@ -131,6 +132,8 @@ CSS = """
   .empty{ max-width:1180px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
   footer{ max-width:1180px; margin:54px auto 0; padding:26px 24px; text-align:center; color:var(--muted); font-size:12.5px; border-top:1px solid var(--border); }
   footer a{ color:var(--text); font-weight:600; }
+  footer .impressum{ margin-top:16px; padding-top:16px; border-top:1px solid var(--border); font-size:11.5px; line-height:1.7; }
+  footer .impressum b{ color:var(--text); }
   mark{ background:linear-gradient(120deg,rgba(236,72,153,.28),rgba(249,115,22,.28)); color:var(--ink); padding:0 3px; border-radius:4px; }
   @media (max-width:560px){ .searchrow{ flex-wrap:wrap } #searchBtn,#clearBtn{ flex:1 } header h1{ font-size:34px } }
 
@@ -240,7 +243,7 @@ html = f"""<!DOCTYPE html>
   <div class="kicker">Learnings &amp; Insights aus den großen Podcasts</div>
   <h1>Podcast-Wissensbibliothek</h1>
   <div class="updated"><span class="dot"></span>Zuletzt aktualisiert: {BUILD_DATE}</div>
-  <p>{len(clean)} kuratierte Erkenntnisse &mdash; davon {n2026} aus 2026 &mdash; aus Diary of a CEO, Lex Fridman, Dwarkesh, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, Doppelgänger, Finanzfluss &amp; vielen mehr. Standardmäßig <strong>neueste zuerst</strong>. Such z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong> oder <strong>Geld</strong> &mdash; Klick auf eine Karte zeigt mehr Details, den Podcast kannst du dir dann optional dazu anhören.</p>
+  <p>{len(clean)} kuratierte Erkenntnisse &mdash; davon {n2026} aus 2026 &mdash; aus Diary of a CEO, Lex Fridman, Dwarkesh, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, Doppelgänger, Finanzfluss &amp; vielen mehr. Standardmäßig <strong>neueste zuerst</strong>. Such z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong> oder <strong>Finanzen</strong> &mdash; Klick auf eine Karte zeigt mehr Details, den Podcast kannst du dir dann optional dazu anhören.</p>
 </header>
 <nav class="topnav">
   <a class="navbtn active" href="podcast-learnings.html">🎧 Wissensbibliothek</a>
@@ -272,8 +275,14 @@ html = f"""<!DOCTYPE html>
   </div>
 </div>
 <footer>
-  {len(clean)} Insights aus öffentlich verfügbaren Podcast-Folgen, Show-Notes und Interviews &mdash; kuratierte Kurzfassungen mit Link zur Originalquelle. „Zeitlos / Klassiker" bündelt zeitlose Frameworks &amp; Grundlagen (z.&nbsp;B. Schlaf, Gewohnheiten, FATE). Ältere reine Tagesnews wurden bewusst entfernt.
+  {len(clean)} Insights aus öffentlich verfügbaren Podcast-Folgen, Show-Notes und Interviews &mdash; kuratierte Kurzfassungen mit Link zur Originalquelle. „Zeitlos / Klassiker" bündelt zeitlose Frameworks &amp; Grundlagen (z.&nbsp;B. Schlaf, Gewohnheiten, FATE).
   &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Reine Diary-of-a-CEO-Seite →</a>
+  <div class="impressum">
+    <b>Impressum</b><br>
+    Nicole Emrich &middot; Ammerndorfer Straße 22 &middot; 90513 Zirndorf<br>
+    Kontakt: <a href="mailto:nicoleemrich@outlook.com">nicoleemrich@outlook.com</a><br>
+    Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: Nicole Emrich (Anschrift wie oben)
+  </div>
 </footer>
 <script>
 const DATA = {DATA_JSON};

@@ -1,0 +1,90 @@
+[
+  {
+    "topic": "Fitness",
+    "pod": "Huberman Lab",
+    "guest": "Dr. Jared Rutter",
+    "title": "Mitochondrien entscheiden über Leben und Tod der Zelle",
+    "insight": "Mitochondrien erzeugen nicht nur Energie, sondern treffen ständig eine fundamentale Entscheidung: Nährstoffe in ATP oder in neue Biomasse umwandeln. Diese Weiche bestimmt laut Rutter, ob ein Herz versagt oder Krebs wächst – das simple Modell 'Kalorien rein, Kalorien raus' greift damit deutlich zu kurz.",
+    "source": "Huberman Lab · Dr. Jared Rutter (2026)",
+    "url": "https://www.youtube.com/watch?v=bv56Cuq-fyY",
+    "keywords": "mitochondria metabolism Mitochondrien Stoffwechsel ATP Biomasse Krebs Herz Fitness",
+    "date": "2026-09"
+  },
+  {
+    "topic": "Mindset",
+    "pod": "Huberman Lab",
+    "guest": "Dr. Masud Husain",
+    "title": "Apathie ist Motivationsverlust, kein Stimmungsproblem",
+    "insight": "Husain zeigt, dass Motivation aus dem Abwägen von wahrgenommener Anstrengung gegen erwartete Belohnung entsteht, gesteuert vom Dopamin-System. Apathie unterscheidet sich klar von Depression – sie ist reiner Motivationsverlust unabhängig von der Stimmung und lässt sich gezielt über Dopamin-Modulation behandeln. Sinn, soziale Bindungen und Neugier wirken als Schutzfaktoren gegen kognitiven Abbau.",
+    "source": "Huberman Lab · Dr. Masud Husain (2026)",
+    "url": "https://www.hubermanlab.com/episode/how-to-improve-motivation-and-overcome-procrastination-masud-husain",
+    "keywords": "motivation apathy procrastination dopamine Apathie Prokrastination Dopamin Mindset",
+    "date": "2026-08"
+  },
+  {
+    "topic": "Schlaf",
+    "pod": "Huberman Lab",
+    "guest": "Dr. Oded Rechavi",
+    "title": "Erinnerungen können über Generationen vererbt werden",
+    "insight": "Das Gehirn kann über kleine RNA-Moleküle mit der nächsten Generation kommunizieren und so Verhaltensweisen weitergeben – ganz ohne Sprache. Bei Fadenwürmern bleiben solche Effekte über 3 bis 5 Generationen bestehen, ohne sich zu verdünnen, was auf einen biologischen Mechanismus hindeutet, der Umwelterfahrungen in vererbbare Information umwandelt.",
+    "source": "Huberman Lab · Dr. Oded Rechavi (2026)",
+    "url": "https://www.hubermanlab.com/episode/dr-oded-rechavi-genes-and-the-inheritance-of-memories-across-generations",
+    "keywords": "epigenetics inheritance memory RNA Vererbung Erinnerung Epigenetik Generationen",
+    "date": "2026-09"
+  },
+  {
+    "topic": "Psychologie",
+    "pod": "The Diary Of A CEO",
+    "guest": "Dr. Leanne Ten Brinke",
+    "title": "Warum kaum jemand Lügen besser als der Zufall erkennt",
+    "insight": "Ten Brinke erklärt die 'Dark Tetrad' – Psychopathie, Narzissmus, Machiavellismus, Sadismus – und wie sich diese Muster im Alltag zeigen. Ihre zentrale Erkenntnis: Die meisten Menschen sind nur leicht besser als der Zufall darin, Lügen zu erkennen; entscheidend sind weniger einzelne 'Lügensignale' als konsistente Verhaltensmuster über Zeit.",
+    "source": "The Diary Of A CEO · Dr. Leanne Ten Brinke (2026)",
+    "url": "https://open.spotify.com/episode/699E1jeVcMCypy6aS794gN",
+    "keywords": "lie detection Dark Tetrad Psychopathie Narzissmus Machiavellismus Lügen erkennen Psychologie",
+    "date": "2026-09"
+  },
+  {
+    "topic": "Psychologie",
+    "pod": "The Diary Of A CEO",
+    "guest": "Vanessa Van Edwards",
+    "title": "Das Drei-Stufen-Modell für Gespräche, die wirklich verbinden",
+    "insight": "Van Edwards' Gesprächsmodell führt von emotionalen Fragen zum Aufbau von Vertrauen über das Erkunden von Motivationen bis zu persönlichen Geschichten. Sie unterscheidet fünf Gesprächsarchetypen und zeigt, dass nonverbale Signale – Körpersprache, Tonfall, Blickkontakt – Wärme und Kompetenz oft wirkungsvoller vermitteln als der Gesprächsinhalt selbst.",
+    "source": "The Diary Of A CEO · Vanessa Van Edwards (2026)",
+    "url": "https://www.shortform.com/podcast/the-diary-of-a-ceo-with-steven-bartlett",
+    "keywords": "conversation communication Gespräch Körpersprache nonverbal Vanessa Van Edwards Psychologie",
+    "date": "2026-09"
+  },
+  {
+    "topic": "KI",
+    "pod": "Doppelgänger Tech Talk",
+    "guest": "Philipp Klöckner & Philipp Glöckler",
+    "title": "Vier KI-Labs veröffentlichen in einer Woche neue Modelle",
+    "insight": "Innerhalb einer einzigen Woche bringen Google, Meta, Anthropic und OpenAI neue Modelle heraus, während Elon Musk ein weiteres ankündigt – ein Tempo, das die Runde als Zeichen für den eskalierenden Wettlauf um KI-Führerschaft wertet.",
+    "source": "Doppelgänger Tech Talk · #594",
+    "url": "https://www.doppelgaenger.io/das-kloecknersche-grundtheorem-ki-dieselskandal-snowflake-broadcom-earnings-594/",
+    "keywords": "AI KI Google Meta Anthropic OpenAI Elon Musk Modelle Wettlauf Doppelgänger",
+    "date": "2026-09"
+  },
+  {
+    "topic": "Geld",
+    "pod": "Doppelgänger Tech Talk",
+    "guest": "Philipp Klöckner & Philipp Glöckler",
+    "title": "Nvidias Doppel-Wette: Investment in Perplexity, Lizenz von Poolside",
+    "insight": "Nvidia steigt bei Perplexity ein und zahlt fast zeitgleich rund sechs Milliarden Dollar für eine Lizenz an Poolside – aus Sicht der Hosts eine Art 'Fallschirmfinanzierung', mit der Nvidia seine eigenen Kunden und damit die Nachfrage nach seinen Chips absichert.",
+    "source": "Doppelgänger Tech Talk · #591",
+    "url": "https://www.doppelgaenger.io/fallschirmfinanzierung-nvidia-stuetzt-perplexity-anonymes-frontier-modell-rhine-group-591/",
+    "keywords": "Nvidia Perplexity Poolside AI KI Investment Chips Doppelgänger Geld",
+    "date": "2026-08"
+  },
+  {
+    "topic": "Gesellschaft",
+    "pod": "OMR Podcast",
+    "guest": "Philipp Jessen",
+    "title": "Mitteparteien unterschätzen die Macht von Social Media",
+    "insight": "Jessen argumentiert, dass etablierte Mitteparteien die Wirkung sozialer Medien unterschätzen, während Parteien wie die AfD sie gezielt nutzen. Entscheidend sei nicht nur Reichweite, sondern die erzeugte Stimmung, die aus den Kanälen in die Gesamtgesellschaft ausstrahlt und am Ende Wahlkämpfe entscheiden kann.",
+    "source": "OMR Podcast · Philipp Jessen (2026)",
+    "url": "https://www.turi2.de/aktuell/hoer-tipp-philipp-jessen-sieht-social-media-unkenntnis-bei-parteien-der-mitte/",
+    "keywords": "Social Media Demokratie Wahlkampf AfD Politik OMR Philipp Jessen Gesellschaft",
+    "date": "2026-09"
+  }
+]

@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-import json, glob, re, os
+import json, glob, re, os, datetime
 HERE=os.path.dirname(os.path.abspath(__file__))
 from collections import Counter
+
+MONATE_DE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]
+def heute_de():
+    d = datetime.date.today()
+    return f"{d.day}. {MONATE_DE[d.month-1]} {d.year}"
 
 # Evergreen allowlist: older (<=2024) entries worth keeping, relabeled "Zeitlos"
 EVERGREEN = {
@@ -83,6 +88,8 @@ CSS = """
   header h1{ font-size:44px; font-weight:800; letter-spacing:-1px; margin:12px 0 10px; color:var(--ink); }
   header p{ color:var(--muted); font-size:15.5px; max-width:690px; margin:0 auto; }
   header p strong{ color:var(--text); font-weight:700; }
+  .updated{ display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:12.5px; font-weight:600; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 15px; box-shadow:var(--shadow); }
+  .updated .dot{ width:7px; height:7px; border-radius:50%; background:#1c8a4e; flex-shrink:0; }
 
   .topnav{ position:relative; z-index:1; max-width:1180px; margin:22px auto 0; padding:0 24px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
   .navbtn{ display:inline-flex; align-items:center; gap:7px; padding:11px 18px; border-radius:999px; font-size:14px; font-weight:600; text-decoration:none; border:1px solid var(--border); background:var(--surface); color:var(--text); box-shadow:var(--shadow); transition:transform .14s,box-shadow .14s; }
@@ -186,6 +193,7 @@ render();
 JS=JS.replace("__TOPICS__",TOPICS_JSON).replace("__PERIODS__",PERIODS_JSON)
 
 n2026=bcnt.get("2026",0)
+BUILD_DATE=heute_de()
 html = f"""<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -198,6 +206,7 @@ html = f"""<!DOCTYPE html>
 <header>
   <div class="kicker">Learnings &amp; Insights aus den großen Podcasts</div>
   <h1>Podcast-Wissensbibliothek</h1>
+  <div class="updated"><span class="dot"></span>Zuletzt aktualisiert: {BUILD_DATE}</div>
   <p>{len(clean)} kuratierte Erkenntnisse &mdash; davon {n2026} aus 2026 &mdash; aus Diary of a CEO, Lex Fridman, Dwarkesh, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, Doppelgänger, Finanzfluss &amp; vielen mehr. Standardmäßig <strong>neueste zuerst</strong>. Such z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong> oder <strong>Geld</strong> &mdash; jede Karte verlinkt zur Quelle.</p>
 </header>
 <nav class="topnav">

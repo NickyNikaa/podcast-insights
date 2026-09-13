@@ -31,7 +31,7 @@ EVERGREEN = {
 }
 
 rows=[]
-for f in sorted(sorted(glob.glob(os.path.join(HERE,'data','*.json')))):
+for f in sorted(sorted(glob.glob(os.path.join(HERE,'data','j*.json')))):
     rows+=json.load(open(f,encoding='utf-8'))
 
 clean=[]; seen=set(); dropped=0
@@ -247,8 +247,7 @@ html = f"""<!DOCTYPE html>
 </header>
 <nav class="topnav">
   <a class="navbtn active" href="podcast-learnings.html">🎧 Wissensbibliothek</a>
-  <a class="navbtn" href="checkliste.html">✅ Checkliste (zum Abhaken)</a>
-  <a class="navbtn" href="tipps.html">📋 Tipps (zum Teilen)</a>
+  <a class="navbtn" href="checkliste.html">✅ Lebensqualität-Checkliste</a>
   <a class="navbtn" href="diary-of-a-ceo.html">📔 Diary of a CEO</a>
 </nav>
 <div class="controls">
@@ -294,3 +293,153 @@ const DATA = {DATA_JSON};
 """
 open(os.path.join(HERE,'podcast-learnings.html'),'w',encoding='utf-8').write(html)
 print('Built bytes:', len(html))
+
+# ---------------------------------------------------------------------------
+# Lebensqualität-Checkliste: eigenständige, datengetriebene Seite (kein
+# Interaktions-/Speicherzustand mehr, nur schnelles Nachschlagen & Teilen).
+# Quelle: data/checkliste-tipps.json — dort werden neue Tipps ergänzt, diese
+# Datei generiert daraus bei jedem Lauf automatisch checkliste.html neu.
+# ---------------------------------------------------------------------------
+CL_ICON = {"Gesundheit":"🩺","Wohlbefinden":"🧘","Business":"💼","Lernen & Entwicklung":"📚",
+           "AI-Tools":"🤖","Alltag":"🌅","Freundschaften & Soziales":"🤝"}
+CL_DEFAULT_ORDER = ["Gesundheit","Wohlbefinden","Business","Lernen & Entwicklung","AI-Tools","Alltag","Freundschaften & Soziales"]
+
+cl_path = os.path.join(HERE,'checkliste-tipps.json')
+cl_data = json.load(open(cl_path, encoding='utf-8')) if os.path.exists(cl_path) else []
+cl_cats_seen = []
+for _d in cl_data:
+    c=_d.get('category','Sonstiges')
+    if c not in cl_cats_seen: cl_cats_seen.append(c)
+CL_ORDER = [c for c in CL_DEFAULT_ORDER if c in cl_cats_seen] + [c for c in cl_cats_seen if c not in CL_DEFAULT_ORDER]
+CL_ICON_FULL = {c: CL_ICON.get(c, "✨") for c in CL_ORDER}
+CL_DATA_JSON = json.dumps(cl_data, ensure_ascii=False, separators=(',',':'))
+CL_ORDER_JSON = json.dumps(CL_ORDER, ensure_ascii=False)
+CL_ICON_JSON = json.dumps(CL_ICON_FULL, ensure_ascii=False)
+
+CL_JS = """
+let activeCat="Alle", query="";
+const main=document.getElementById("main"), chips=document.getElementById("chips"),
+      searchEl=document.getElementById("search");
+function badgeClass(b){const x=b.toLowerCase();
+  if(/(nicht zugelassen|graumarkt|vorsicht|rezeptpflichtig|unklar)/.test(x))return "danger";
+  if(/(frei verkäuflich|zugelassen|kostenlos|quick win|studienlage stark|atomic|2-minuten)/.test(x))return "ok";
+  if(/(beobachtung|wächst|studienlage gut|fachgesellschaft|neue datenlage)/.test(x))return "warn";
+  return "neutral";}
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function hl(t,q){const s=escapeHtml(t);if(!q)return s;const re=new RegExp("("+q.replace(/[.*+?^${}()|[\\]\\\\]/g,"\\\\$&")+")","gi");return s.replace(re,"<mark>$1</mark>");}
+["Alle",...ORDER].forEach(c=>{const ch=document.createElement("div");ch.className="chip"+(c==="Alle"?" active":"");ch.textContent=c==="Alle"?"Alle Bereiche":(ICON[c]?ICON[c]+" "+c:c);ch.onclick=()=>{activeCat=c;chips.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));ch.classList.add("active");render();};chips.appendChild(ch);});
+function render(){
+  const q=query.trim().toLowerCase();
+  let html="";
+  ORDER.forEach(cat=>{
+    if(activeCat!=="Alle"&&activeCat!==cat)return;
+    const items=DATA.filter(d=>d.category===cat&&(!q||(d.title+" "+d.detail+" "+d.badge).toLowerCase().includes(q)));
+    if(!items.length)return;
+    html+=`<div class="sec"><div class="sechead"><span>${ICON[cat]||""}</span><span>${escapeHtml(cat)}</span><span class="seccount">${items.length}</span></div>`;
+    items.forEach(d=>{
+      html+=`<div class="item">
+        <div class="it-body">
+          <div class="it-top"><span class="it-title">${hl(d.title,q)}</span>${d.badge?`<span class="badge ${badgeClass(d.badge)}">${escapeHtml(d.badge)}</span>`:""}</div>
+          <div class="it-detail">${hl(d.detail,q)}</div>
+          ${d.url?`<div class="it-src"><a href="${encodeURI(d.url)}" target="_blank" rel="noopener">Quelle ansehen &rarr;</a></div>`:""}
+        </div></div>`;});
+    html+=`</div>`;
+  });
+  main.innerHTML=html||`<div class="empty">Keine Treffer.</div>`;
+}
+searchEl.addEventListener("input",e=>{query=e.target.value;render();});
+render();
+"""
+
+CL_CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root{ --bg:#f7f6f3; --surface:#ffffff; --surface-2:#f2f0ea; --text:#15151a; --muted:#74747c; --border:rgba(20,20,35,.10); --ink:#16161b; --shadow:0 1px 2px rgba(20,20,40,.04),0 6px 22px rgba(20,20,40,.06); --grad:linear-gradient(120deg,#6366f1,#8b5cf6,#ec4899,#f97316); --ok-bg:#e7f6ed; --ok-tx:#1c8a4e; --warn-bg:#fbf0dd; --warn-tx:#b9791b; --danger-bg:#fbe7e7; --danger-tx:#c0453f; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ position:relative; font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; padding:0 0 70px; -webkit-font-smoothing:antialiased; }
+  body::before{ content:""; position:absolute; top:0; left:0; right:0; height:380px; z-index:0; pointer-events:none; opacity:.8; background:radial-gradient(50% 60% at 22% 12%,rgba(99,102,241,.46),transparent 62%),radial-gradient(48% 58% at 80% 16%,rgba(236,72,153,.42),transparent 60%),radial-gradient(60% 65% at 55% 55%,rgba(249,115,22,.32),transparent 62%); }
+  .topnav{ position:relative; z-index:1; max-width:1000px; margin:22px auto 0; padding:0 24px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .navbtn{ display:inline-flex; align-items:center; gap:7px; padding:11px 18px; border-radius:999px; font-size:14px; font-weight:600; text-decoration:none; border:1px solid var(--border); background:var(--surface); color:var(--text); box-shadow:var(--shadow); transition:transform .14s,box-shadow .14s; }
+  .navbtn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(20,20,40,.10); }
+  .navbtn.active{ background:var(--ink); color:#fff; border-color:var(--ink); cursor:default; }
+  .navbtn.active:hover{ transform:none; }
+  .updated{ display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:12.5px; font-weight:600; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 15px; box-shadow:var(--shadow); }
+  .updated .dot{ width:7px; height:7px; border-radius:50%; background:#1c8a4e; flex-shrink:0; }
+  header{ position:relative; z-index:1; padding:50px 24px 6px; max-width:1000px; margin:0 auto; text-align:center; }
+  header .kicker{ display:inline-block; font-size:12.5px; letter-spacing:1.5px; text-transform:uppercase; font-weight:800; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  header h1{ font-size:42px; font-weight:800; letter-spacing:-1px; margin:12px 0 10px; color:var(--ink); }
+  header p{ color:var(--muted); font-size:15.5px; max-width:680px; margin:0 auto; }
+  .controls{ max-width:1000px; margin:28px auto 0; padding:0 24px; }
+  #search{ width:100%; padding:14px 18px; font-size:15px; background:var(--surface); border:1px solid var(--border); border-radius:14px; color:var(--text); outline:none; box-shadow:var(--shadow); }
+  #search:focus{ border-color:#cdccdd; box-shadow:0 0 0 4px rgba(99,102,241,.13); }
+  #search::placeholder{ color:#9a9aa2; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+  .chip{ padding:8px 14px; font-size:13px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer; user-select:none; transition:all .15s; }
+  .chip:hover{ color:var(--text); border-color:#cdccdd; }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; font-weight:600; }
+  main{ max-width:1000px; margin:8px auto 0; padding:0 24px; }
+  .sec{ margin-top:34px; }
+  .sechead{ display:flex; align-items:center; gap:10px; font-size:21px; font-weight:800; margin-bottom:6px; color:var(--ink); letter-spacing:-.3px; }
+  .seccount{ font-size:12.5px; color:var(--muted); font-weight:600; }
+  .item{ display:flex; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px; margin-top:11px; box-shadow:var(--shadow); transition:transform .12s,box-shadow .12s; }
+  .item:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(20,20,40,.09); }
+  .it-body{ flex:1; }
+  .it-top{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:3px; }
+  .it-title{ font-size:15.5px; font-weight:700; color:var(--ink); }
+  .badge{ font-size:10.5px; letter-spacing:.2px; padding:3px 10px; border-radius:999px; font-weight:700; text-transform:uppercase; }
+  .badge.ok{ background:var(--ok-bg); color:var(--ok-tx); }
+  .badge.warn{ background:var(--warn-bg); color:var(--warn-tx); }
+  .badge.danger{ background:var(--danger-bg); color:var(--danger-tx); }
+  .badge.neutral{ background:var(--surface-2); color:#55555e; }
+  .it-detail{ font-size:14px; color:#55555e; }
+  .it-src{ margin-top:7px; font-size:12.5px; }
+  .it-src a{ color:var(--text); text-decoration:none; font-weight:700; }
+  .it-src a:hover{ color:#ec4899; }
+  .empty{ text-align:center; color:var(--muted); margin:40px 0; }
+  footer{ max-width:1000px; margin:46px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12.5px; border-top:1px solid var(--border); }
+  footer a{ color:var(--text); font-weight:600; }
+  .disc{ max-width:1000px; margin:26px auto 0; padding:15px 18px; background:var(--warn-bg); border:1px solid rgba(185,121,27,.25); border-radius:14px; color:#8a6212; font-size:12.5px; }
+  mark{ background:linear-gradient(120deg,rgba(236,72,153,.28),rgba(249,115,22,.28)); color:var(--ink); padding:0 3px; border-radius:4px; }
+"""
+
+cl_html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lebensqualität-Checkliste — umsetzbare Tipps aus aktueller Datenlage</title>
+<style>{CL_CSS}</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Aus aktuellen Studien &amp; Daten abgeleitet</div>
+  <h1>Lebensqualität-Checkliste</h1>
+  <div class="updated"><span class="dot"></span>Zuletzt aktualisiert: {BUILD_DATE}</div>
+  <p>Runtergebrochene, im Alltag sofort umsetzbare Schritte &mdash; nach Bereichen sortiert. Zum schnellen Nachschlagen und Teilen, jede Karte verlinkt zur Quelle.</p>
+</header>
+<nav class="topnav">
+  <a class="navbtn" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
+  <a class="navbtn active" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
+  <a class="navbtn" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
+</nav>
+<div class="controls">
+  <input id="search" type="text" placeholder="In den Tipps suchen… (z. B. Schlaf, Vitamin, Verhandeln, Perplexity)" autocomplete="off">
+  <div class="chips" id="chips"></div>
+</div>
+<main id="main"></main>
+<div class="disc">
+  <strong>Wichtiger Hinweis:</strong> Dies ist allgemeine, recherchierte Information — keine medizinische Beratung. Angaben zur Verfügbarkeit/Rechtslage in Deutschland (Stand der Recherche) können sich ändern. Vor Einnahme von Supplements, Peptiden oder Medikamenten bitte ärztlich bzw. in der Apotheke abklären — besonders bei Vorerkrankungen, Schwangerschaft oder anderen Medikamenten.
+</div>
+<footer>
+  {len(cl_data)} umsetzbare Tipps aus öffentlich verfügbaren Studien, Fachgesellschaften (u. a. BfR, DGE, Verbraucherzentrale, WHO, Lancet) und Experteninterviews &mdash; wird zusammen mit der Podcast-Wissensbibliothek aktualisiert. &nbsp;·&nbsp; <a href="podcast-learnings.html">← Zur Podcast-Wissensbibliothek</a>
+</footer>
+<script>
+const DATA = {CL_DATA_JSON};
+const ORDER = {CL_ORDER_JSON};
+const ICON = {CL_ICON_JSON};
+{CL_JS}
+</script>
+</body>
+</html>
+"""
+open(os.path.join(HERE,'checkliste.html'),'w',encoding='utf-8').write(cl_html)
+print('Checkliste built bytes:', len(cl_html), '| items:', len(cl_data))

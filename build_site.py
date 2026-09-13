@@ -247,7 +247,8 @@ html = f"""<!DOCTYPE html>
 </header>
 <nav class="topnav">
   <a class="navbtn active" href="podcast-learnings.html">🎧 Wissensbibliothek</a>
-  <a class="navbtn" href="checkliste.html">✅ Lebensqualität-Checkliste</a>
+  <a class="navbtn" href="checkliste.html">✅ Checkliste (zum Abhaken)</a>
+  <a class="navbtn" href="tipps.html">📋 Tipps (zum Teilen)</a>
   <a class="navbtn" href="diary-of-a-ceo.html">📔 Diary of a CEO</a>
 </nav>
 <div class="controls">

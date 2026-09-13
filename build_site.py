@@ -114,7 +114,7 @@ CSS = """
   .chip.period.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
   .count{ max-width:1180px; margin:22px auto 0; padding:0 24px; color:var(--muted); font-size:13px; }
   .grid{ max-width:1180px; margin:12px auto 0; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:18px; }
-  .card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:22px; display:flex; flex-direction:column; box-shadow:var(--shadow); transition:transform .14s,box-shadow .14s; }
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:22px; display:flex; flex-direction:column; box-shadow:var(--shadow); transition:transform .14s,box-shadow .14s; cursor:pointer; }
   .card:hover{ transform:translateY(-3px); box-shadow:0 10px 32px rgba(20,20,40,.10); }
   .badges{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; align-items:center; }
   .badge{ font-size:11px; letter-spacing:.2px; padding:4px 11px; border-radius:999px; font-weight:600; }
@@ -126,13 +126,25 @@ CSS = """
   .card p{ font-size:14.5px; color:#55555e; flex-grow:1; }
   .card .src{ margin-top:16px; padding-top:13px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:10px; }
   .card .src .who{ flex:1; }
-  .card .src a{ color:var(--text); text-decoration:none; font-weight:700; white-space:nowrap; }
-  .card .src a:hover{ color:#ec4899; }
+  .card .src .more{ color:var(--text); font-weight:700; white-space:nowrap; }
+  .card:hover .src .more{ color:#ec4899; }
   .empty{ max-width:1180px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
   footer{ max-width:1180px; margin:54px auto 0; padding:26px 24px; text-align:center; color:var(--muted); font-size:12.5px; border-top:1px solid var(--border); }
   footer a{ color:var(--text); font-weight:600; }
   mark{ background:linear-gradient(120deg,rgba(236,72,153,.28),rgba(249,115,22,.28)); color:var(--ink); padding:0 3px; border-radius:4px; }
   @media (max-width:560px){ .searchrow{ flex-wrap:wrap } #searchBtn,#clearBtn{ flex:1 } header h1{ font-size:34px } }
+
+  .modaloverlay{ position:fixed; inset:0; background:rgba(15,15,20,.55); backdrop-filter:blur(3px); z-index:50; display:none; align-items:flex-start; justify-content:center; padding:6vh 18px; overflow-y:auto; }
+  .modaloverlay.open{ display:flex; }
+  .modalbox{ background:var(--surface); border-radius:20px; max-width:640px; width:100%; padding:30px 30px 26px; box-shadow:0 24px 70px rgba(10,10,20,.35); position:relative; }
+  .modalclose{ position:absolute; top:16px; right:16px; width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface-2); color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .modalclose:hover{ color:var(--text); }
+  .modalbox .badges{ margin-bottom:14px; padding-right:40px; }
+  .modalbox h2{ font-size:23px; font-weight:800; letter-spacing:-.3px; color:var(--ink); margin-bottom:14px; line-height:1.3; }
+  .modalbox .takeaways{ font-size:15px; color:#3c3c44; line-height:1.65; white-space:pre-line; }
+  .modalbox .modalsrc{ margin-top:22px; padding-top:16px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); }
+  .modalbox .listenbtn{ display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:13px 22px; border-radius:14px; background:var(--ink); color:#fff; text-decoration:none; font-weight:700; font-size:14.5px; transition:opacity .15s; }
+  .modalbox .listenbtn:hover{ opacity:.88; }
 """
 
 JS = """
@@ -157,19 +169,40 @@ const grid=document.getElementById("grid"), tfilters=document.getElementById("to
 function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function highlight(t,q){const safe=escapeHtml(t); if(!q) return safe; const re=new RegExp("("+q.replace(/[.*+?^${}()|[\\]\\\\]/g,"\\\\$&")+")","gi"); return safe.replace(re,"<mark>$1</mark>");}
 function doSearch(){ query=searchEl.value; render(); }
+let currentItems=[];
+const modalOverlay=document.getElementById("modalOverlay"), modalClose=document.getElementById("modalClose");
+function openModal(i){
+  const d=currentItems[i]; if(!d) return;
+  const fresh=d.bucket==="2026";
+  document.getElementById("modalBadges").innerHTML=
+    `<span class="badge topic">${escapeHtml(d.topic)}</span>`+
+    `<span class="badge pod">${escapeHtml(d.pod)}</span>`+
+    `<span class="badge date${fresh?" is2026":""}">${escapeHtml(d.date)}</span>`;
+  document.getElementById("modalTitle").textContent=d.title;
+  document.getElementById("modalTakeaways").textContent=d.takeaways||d.insight;
+  document.getElementById("modalSrc").textContent=d.source;
+  document.getElementById("modalListen").href=encodeURI(d.url);
+  modalOverlay.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeModal(){ modalOverlay.classList.remove("open"); document.body.style.overflow=""; }
+modalClose.addEventListener("click",closeModal);
+modalOverlay.addEventListener("click",e=>{ if(e.target===modalOverlay) closeModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
 function render(){
   const q=query.trim().toLowerCase();
   const items=DATA.filter(d=>{
     const tOk=activeTopic==="Alle"||d.topic===activeTopic;
     const pOk=activePeriod==="Alle"||d.bucket===activePeriod;
-    const text=(d.title+" "+d.insight+" "+d.source+" "+d.topic+" "+d.pod+" "+d.guest+" "+d.keywords+" "+d.date).toLowerCase();
+    const text=(d.title+" "+d.insight+" "+(d.takeaways||"")+" "+d.source+" "+d.topic+" "+d.pod+" "+d.guest+" "+d.keywords+" "+d.date).toLowerCase();
     return tOk&&pOk&&(!q||text.includes(q));
   });
+  currentItems=items;
   countEl.textContent=items.length+(items.length===1?" Insight":" Insights")+" · neueste zuerst";
-  grid.innerHTML=items.map(d=>{
+  grid.innerHTML=items.map((d,idx)=>{
     const fresh=d.bucket==="2026";
     return `
-    <div class="card">
+    <div class="card" onclick="openModal(${idx})">
       <div class="badges">
         <span class="badge topic">${escapeHtml(d.topic)}</span>
         <span class="badge pod">${escapeHtml(d.pod)}</span>
@@ -179,7 +212,7 @@ function render(){
       <p>${highlight(d.insight,q)}</p>
       <div class="src">
         <span class="who">${highlight(d.source,q)}</span>
-        <a href="${encodeURI(d.url)}" target="_blank" rel="noopener">Quelle ansehen &rarr;</a>
+        <span class="more">Mehr erfahren &rarr;</span>
       </div>
     </div>`;}).join("");
   emptyEl.style.display=items.length?"none":"block";
@@ -207,7 +240,7 @@ html = f"""<!DOCTYPE html>
   <div class="kicker">Learnings &amp; Insights aus den großen Podcasts</div>
   <h1>Podcast-Wissensbibliothek</h1>
   <div class="updated"><span class="dot"></span>Zuletzt aktualisiert: {BUILD_DATE}</div>
-  <p>{len(clean)} kuratierte Erkenntnisse &mdash; davon {n2026} aus 2026 &mdash; aus Diary of a CEO, Lex Fridman, Dwarkesh, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, Doppelgänger, Finanzfluss &amp; vielen mehr. Standardmäßig <strong>neueste zuerst</strong>. Such z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong> oder <strong>Geld</strong> &mdash; jede Karte verlinkt zur Quelle.</p>
+  <p>{len(clean)} kuratierte Erkenntnisse &mdash; davon {n2026} aus 2026 &mdash; aus Diary of a CEO, Lex Fridman, Dwarkesh, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, Doppelgänger, Finanzfluss &amp; vielen mehr. Standardmäßig <strong>neueste zuerst</strong>. Such z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong> oder <strong>Geld</strong> &mdash; Klick auf eine Karte zeigt mehr Details, den Podcast kannst du dir dann optional dazu anhören.</p>
 </header>
 <nav class="topnav">
   <a class="navbtn active" href="podcast-learnings.html">🎧 Wissensbibliothek</a>
@@ -228,6 +261,16 @@ html = f"""<!DOCTYPE html>
 <div class="count" id="count"></div>
 <div class="grid" id="grid"></div>
 <div class="empty" id="empty" style="display:none">Keine Treffer. Versuch ein anderes Stichwort, Thema oder einen anderen Zeitraum.</div>
+<div class="modaloverlay" id="modalOverlay">
+  <div class="modalbox">
+    <button class="modalclose" id="modalClose" aria-label="Schließen">✕</button>
+    <div class="badges" id="modalBadges"></div>
+    <h2 id="modalTitle"></h2>
+    <div class="takeaways" id="modalTakeaways"></div>
+    <a class="listenbtn" id="modalListen" href="#" target="_blank" rel="noopener">🎧 Podcast anhören / ansehen &rarr;</a>
+    <div class="modalsrc" id="modalSrc"></div>
+  </div>
+</div>
 <footer>
   {len(clean)} Insights aus öffentlich verfügbaren Podcast-Folgen, Show-Notes und Interviews &mdash; kuratierte Kurzfassungen mit Link zur Originalquelle. „Zeitlos / Klassiker" bündelt zeitlose Frameworks &amp; Grundlagen (z.&nbsp;B. Schlaf, Gewohnheiten, FATE). Ältere reine Tagesnews wurden bewusst entfernt.
   &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Reine Diary-of-a-CEO-Seite →</a>

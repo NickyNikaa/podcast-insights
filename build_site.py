@@ -31,7 +31,7 @@ EVERGREEN = {
 }
 
 rows=[]
-for f in sorted(sorted(glob.glob(os.path.join(HERE,'data','j*.json')))):
+for f in sorted(glob.glob(os.path.join(HERE,'data','j*.json')), key=lambda p: int(re.search(r'j(\d+)\.json', p).group(1))):
     rows+=json.load(open(f,encoding='utf-8'))
 
 clean=[]; seen=set(); dropped=0
@@ -43,16 +43,16 @@ for r in rows:
     if key in seen: continue
     kw=r.get('keywords',''); kw=' '.join(kw) if isinstance(kw,list) else kw
     date=(r.get('date') or '').strip()
-    m=re.match(r'(\d{4})(?:-(\d{2}))?', date)
+    m=re.match(r'(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?', date)
     if m:
-        year=int(m.group(1)); month=int(m.group(2) or 0)
+        year=int(m.group(1)); month=int(m.group(2) or 0); day=int(m.group(3) or 1)
     else:
-        year=None; month=0
+        year=None; month=0; day=1
     # prune / bucket
     if year is None:
         bucket="Zeitlos"; sortkey=1  # evergreen frameworks (no date)
     elif year>=2025:
-        bucket=str(year); sortkey=year*100+month
+        bucket=str(year); sortkey=year*10000+month*100+day
     else:  # year <= 2024
         if title in EVERGREEN:
             bucket="Zeitlos"; sortkey=1

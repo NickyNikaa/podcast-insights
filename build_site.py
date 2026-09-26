@@ -249,6 +249,7 @@ html = f"""<!DOCTYPE html>
   <a class="navbtn active" href="podcast-learnings.html">🎧 Wissensbibliothek</a>
   <a class="navbtn" href="checkliste.html">✅ Lebensqualität-Checkliste</a>
   <a class="navbtn" href="diary-of-a-ceo.html">📔 Diary of a CEO</a>
+  <a class="navbtn" href="chase-hughes.html">🧠 Chase Hughes</a>
 </nav>
 <div class="controls">
   <div class="searchrow">
@@ -277,6 +278,7 @@ html = f"""<!DOCTYPE html>
 <footer>
   {len(clean)} Insights aus öffentlich verfügbaren Podcast-Folgen, Show-Notes und Interviews &mdash; kuratierte Kurzfassungen mit Link zur Originalquelle. „Zeitlos / Klassiker" bündelt zeitlose Frameworks &amp; Grundlagen (z.&nbsp;B. Schlaf, Gewohnheiten, FATE).
   &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Reine Diary-of-a-CEO-Seite →</a>
+  &nbsp;·&nbsp; <a href="chase-hughes.html">Reine Chase-Hughes-Seite →</a>
   <div class="impressum">
     <b>Impressum</b><br>
     Nicole Emrich &middot; Ammerndorfer Straße 22 &middot; 90513 Zirndorf<br>
@@ -420,6 +422,7 @@ cl_html = f"""<!DOCTYPE html>
   <a class="navbtn" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
   <a class="navbtn active" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
   <a class="navbtn" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
+  <a class="navbtn" href="chase-hughes.html">&#129504; Chase Hughes</a>
 </nav>
 <div class="controls">
   <input id="search" type="text" placeholder="In den Tipps suchen… (z. B. Schlaf, Vitamin, Verhandeln, Perplexity)" autocomplete="off">
